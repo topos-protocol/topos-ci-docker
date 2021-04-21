@@ -17,5 +17,7 @@ RUN apt-get update && apt-get install -y \
     cmake pkg-config libssl-dev git build-essential clang libclang-dev curl \
 && rm -rf /var/lib/apt/lists/*
 
+RUN install -d .cargo
+COPY cargo/config .cargo/config
 COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
