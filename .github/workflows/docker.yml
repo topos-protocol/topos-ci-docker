@@ -26,7 +26,7 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
-            ghcr.io/toposware/topos-ci-docker:beta
+            ghcr.io/toposware/topos-ci-docker
       - 
         name: Push to GitHub Container Registry
         uses: docker/build-push-action@v2
