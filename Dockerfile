@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y \
 && rm -rf /var/lib/apt/lists/*
 
 RUN install -d .cargo
-RUN install -d /github/home/.cargo/config
+RUN install -d /github/home/.cargo
 RUN install -d bin
 COPY cargo/config .cargo/config
 COPY cargo/config /github/home/.cargo/config
