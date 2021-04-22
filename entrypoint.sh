@@ -12,6 +12,9 @@ export GIT_ASKPASS=/bin/git_env_password.sh
 chmod +x $GIT_ASKPASS
 
 # debug:
+echo HELLO WORLD
 git clone https://github.com/ToposWare/runtime-benchmark-bot.git
+find runtime-benchmark-bot
+
 
 bash -c "$*"
