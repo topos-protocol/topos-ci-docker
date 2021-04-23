@@ -17,9 +17,10 @@ RUN apt-get update && apt-get install -y \
     cmake pkg-config libssl-dev git build-essential clang libclang-dev curl \
 && rm -rf /var/lib/apt/lists/*
 
-RUN install -d cargo
+RUN install -d /root/.cargo
 RUN install -d bin
-COPY cargo/config /cargo/config
+COPY cargo/config /root/cargo/config
+COPY gitconfig /root/.gitconfig
 COPY entrypoint.sh /entrypoint.sh
 COPY git_env_password.sh bin/git_env_password.sh
 ENTRYPOINT ["/entrypoint.sh"]
