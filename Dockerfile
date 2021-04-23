@@ -20,7 +20,9 @@ RUN apt-get update && apt-get install -y \
 RUN install -d /github/home/.cargo
 RUN install -d bin
 COPY cargo/config /github/home/.cargo/config
+COPY cargo/config /cargo/config
 COPY gitconfig /github/home/.gitconfig
 COPY entrypoint.sh /entrypoint.sh
+COPY init.sh /init.sh
 COPY git_env_password.sh bin/git_env_password.sh
 ENTRYPOINT ["/entrypoint.sh"]
