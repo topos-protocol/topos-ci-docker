@@ -1,2 +1,2 @@
 #!/bin/bash
-echo $ROBOT_TOPOSWARE_PRIV_REPOS_TOKEN
+echo $PRIV_GH_TOKEN
