@@ -14,8 +14,9 @@ RUN rustup toolchain install nightly
 RUN rustup target add wasm32-unknown-unknown --toolchain nightly
 
 RUN apt-get update && apt-get install -y \
-    cmake pkg-config libssl-dev git build-essential clang libclang-dev curl \
+    cmake pkg-config libssl-dev git build-essential clang libclang-dev curl python3-pip \
 && rm -rf /var/lib/apt/lists/*
+RUN pip3 install substrate-interface
 
 RUN install -d bin
 COPY entrypoint.sh /entrypoint.sh
