@@ -44,3 +44,39 @@ jobs:
           build-args: |
             PRIV_GH_USER=${{ github.actor }}
             PRIV_GH_TOKEN=${{ secrets.GITHUB_TOKEN }}
+  build-and-push-image:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - dockerfile: ./base_images/rust_nightly_builder
+            image: rust_nightly_builder
+          - dockerfile: ./base_images/rust_stable_builder
+            image: rust_stable_builder
+    name: Build and Push ${{ matrix.image }}
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ matrix.image }}
+      - name: Push to GitHub Container Registry
+        uses: docker/build-push-action@v3
+        with:
+          context:
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
