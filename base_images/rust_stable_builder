@@ -7,16 +7,6 @@ ENV RUST_BACKTRACE=1
 RUN apt update && \
     apt install -y clang cmake protobuf-compiler libprotobuf-dev
 
-# Install mold
-RUN git clone https://github.com/rui314/mold.git \
-    && mkdir mold/build \
-    && cd mold/build \
-    && git checkout v1.6.0 \
-    && ../install-build-deps.sh \
-    && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=c++ .. \
-    && cmake --build . -j $(nproc) \
-    && cmake --install .
-
 RUN rustup toolchain install stable && \
     rustup default stable && \
     rustup target add x86_64-unknown-linux-musl && \
