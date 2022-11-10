@@ -1,0 +1,69 @@
+name: Rust Builder
+
+on:
+  schedule:
+    # Triggers the workflow every day at 5:30 UTC:
+    - cron:  '30 5 * * *'
+  push:
+    branches:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+env:
+  registry: ghcr.io
+
+jobs:
+  build-and-push-image:
+    runs-on: ubuntu-latest-16-cores
+    strategy:
+      fail-fast: false
+      matrix:
+        toolchain_version:
+          - stable
+          - nightly
+        rust_version:
+          - { major: 1, minor: 65, patch: 0 }
+        debian_suite:
+          - bullseye
+        # Do *not* execute scheduled runs for matrix.toolchain_version == 'stable'
+        scheduled:
+          - ${{ github.event_name == 'schedule' }}
+        exclude:
+          - scheduled: true
+            toolchain_version: stable
+
+    name: Build and push rust_builder:${{ matrix.rust_version.major }}.${{ matrix.rust_version.minor }}.${{ matrix.rust_version.patch }}-${{ matrix.debian_suite }}-${{ matrix.toolchain_version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.registry }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.registry }}/${{ github.repository_owner }}/rust_builder
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=${{ matrix.rust_version.major }}.${{ matrix.rust_version.minor }}.${{ matrix.rust_version.patch }}-${{ matrix.debian_suite }}-${{ matrix.toolchain_version }}
+            type=raw,value=${{ matrix.rust_version.major }}.${{ matrix.rust_version.minor }}-${{ matrix.debian_suite }}-${{ matrix.toolchain_version }}
+            type=schedule,pattern=${{ matrix.rust_version }}.${{ matrix.rust_version }}.${{ matrix.rust_version.patch }}-${{ matrix.debian_suite }}-${{ matrix.toolchain_version }}-{{date 'YYYYMMDD'}}
+            type=schedule,pattern=${{ matrix.rust_version }}.${{ matrix.rust_version }}-${{ matrix.debian_suite }}-${{ matrix.toolchain_version }}-{{date 'YYYYMMDD'}}
+
+      - name: Push to GitHub Container Registry
+        uses: docker/build-push-action@v3
+        with:
+          build-args: |
+            TOOLCHAIN_VERSION=${{ matrix.toolchain_version }}
+            RUST_VERSION=${{ matrix.rust_version.major }}.${{ matrix.rust_version.minor }}.${{ matrix.rust_version.patch }}
+            DEBIAN_SUITE=${{ matrix.debian_suite }}
+          context: ./rust_builder/
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}

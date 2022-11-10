@@ -1,4 +1,4 @@
-name: Docker
+name: Topos CI Docker
 
 on:
   push:
@@ -13,7 +13,7 @@ env:
 jobs:
   docker:
     name: Build and push docker image to GitHub Container Registry
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-16-cores
     outputs:
       docker_tag: ${{ steps.meta.outputs.tags }}
     permissions:
@@ -37,7 +37,7 @@ jobs:
       - name: Push to GitHub Container Registry
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
-          context: .
+          context: ./topos_ci_docker/
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
