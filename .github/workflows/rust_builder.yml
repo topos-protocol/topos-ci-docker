@@ -50,11 +50,11 @@ jobs:
         with:
           images: ${{ env.registry }}/${{ github.repository_owner }}/rust_builder
           tags: |
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=${{ matrix.toolchain_version }}-latest
             type=raw,value=${{ matrix.rust_version.major }}.${{ matrix.rust_version.minor }}.${{ matrix.rust_version.patch }}-${{ matrix.debian_suite }}-${{ matrix.toolchain_version }}
             type=raw,value=${{ matrix.rust_version.major }}.${{ matrix.rust_version.minor }}-${{ matrix.debian_suite }}-${{ matrix.toolchain_version }}
-            type=schedule,pattern=${{ matrix.rust_version }}.${{ matrix.rust_version }}.${{ matrix.rust_version.patch }}-${{ matrix.debian_suite }}-${{ matrix.toolchain_version }}-{{date 'YYYYMMDD'}}
-            type=schedule,pattern=${{ matrix.rust_version }}.${{ matrix.rust_version }}-${{ matrix.debian_suite }}-${{ matrix.toolchain_version }}-{{date 'YYYYMMDD'}}
+            type=schedule,pattern=${{ matrix.rust_version.major }}.${{ matrix.rust_version.minor }}.${{ matrix.rust_version.patch }}-${{ matrix.debian_suite }}-${{ matrix.toolchain_version }}-{{date 'YYYYMMDD'}}
+            type=schedule,pattern=${{ matrix.rust_version.major }}.${{ matrix.rust_version.minor }}-${{ matrix.debian_suite }}-${{ matrix.toolchain_version }}-{{date 'YYYYMMDD'}}
 
       - name: Push to GitHub Container Registry
         uses: docker/build-push-action@v3
