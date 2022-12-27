@@ -13,7 +13,6 @@
   </p>
   
   ![example workflow](https://github.com/toposware/topos-ci-docker/actions/workflows/rust_builder.yml/badge.svg)
-  ![example workflow](https://github.com/toposware/topos-ci-docker/actions/workflows/topos_ci_docker.yml/badge.svg)
 </div>
 
 ## Resources
