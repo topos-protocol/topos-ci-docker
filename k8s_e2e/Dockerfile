@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y \
     awscli \
     apt-transport-https \
     curl \
+    git \
     gnupg \
     software-properties-common \
     wget \
