@@ -11,6 +11,7 @@ on:
 
 env:
   registry: ghcr.io
+  AWS_SHARED_CREDENTIALS_FILE: "${{ github.workspace }}/.aws/credentials"
 
 jobs:
   build-and-push-image:
@@ -51,6 +52,23 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Configure AWS credentials for cicd-devnet-1 account
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: arn:aws:iam::367397670706:role/GitHubRole
+          role-session-name: GitHubRole-session
+          aws-region: us-east-1
+          role-skip-session-tagging: true
+          role-duration-seconds: 3600
+
+      - name: Add profile credentials to .aws/credentials
+        run: |
+            aws configure set aws_access_key_id ${{ env.AWS_ACCESS_KEY_ID }} --profile default
+            aws configure set aws_secret_access_key ${{ env.AWS_SECRET_ACCESS_KEY }} --profile default
+            aws configure set aws_session_token ${{ env.AWS_SESSION_TOKEN }} --profile default
+
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v4
@@ -66,6 +84,8 @@ jobs:
       - name: Push to GitHub Container Registry
         uses: docker/build-push-action@v3
         with:
+          secret-files: |
+            "aws=${{ github.workspace }}/.aws/credentials"
           build-args: |
             TOOLCHAIN_VERSION=${{ matrix.toolchain_version }}
             RUST_VERSION=${{ matrix.rust_version.major }}.${{ matrix.rust_version.minor }}.${{ matrix.rust_version.patch }}
