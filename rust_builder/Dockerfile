@@ -1,6 +1,5 @@
-ARG RUST_VERSION
 ARG DEBIAN_SUITE
-FROM rust:${RUST_VERSION}-${DEBIAN_SUITE}
+FROM rust:${DEBIAN_SUITE}
 
 RUN apt update && \
     apt install -y clang cmake protobuf-compiler libprotobuf-dev
