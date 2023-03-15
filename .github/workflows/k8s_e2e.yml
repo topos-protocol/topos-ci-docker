@@ -3,7 +3,6 @@ name: k8s_e2e
 on:
   push:
     branches:
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 env:
@@ -11,7 +10,7 @@ env:
 
 jobs:
   build-and-push-image:
-    runs-on: ubuntu-latest-16-cores
+    runs-on: ubuntu-latest
     timeout-minutes: 90
     name: Build and push k8s_e2e:latest
     steps:
