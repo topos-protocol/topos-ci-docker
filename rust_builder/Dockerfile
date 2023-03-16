@@ -12,4 +12,4 @@ ENV RUST_BACKTRACE=1
 
 RUN rustup toolchain install ${TOOLCHAIN_VERSION} && \
     rustup default ${TOOLCHAIN_VERSION} && \
-    cargo install cargo-chef sccache --locked
+    cargo install sccache --locked
