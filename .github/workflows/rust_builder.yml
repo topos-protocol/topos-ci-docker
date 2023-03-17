@@ -14,7 +14,7 @@ env:
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 180
     strategy:
       fail-fast: false
       matrix:
@@ -59,7 +59,7 @@ jobs:
             type=schedule,pattern=${{ matrix.debian_suite }}-${{ matrix.toolchain_version }}-{{date 'YYYYMMDD'}}
 
       - name: Push to GitHub Container Registry
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           build-args: |
             TOOLCHAIN_VERSION=${{ matrix.toolchain_version }}
