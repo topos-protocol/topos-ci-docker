@@ -10,6 +10,7 @@ on:
 
 env:
   registry: ghcr.io
+  protobuf_compiler: https://github.com/protocolbuffers/protobuf/releases/download/v21.12/protoc-21.12-linux-x86_64.zip
 
 jobs:
   build-and-push-image:
@@ -29,8 +30,6 @@ jobs:
         exclude:
           - scheduled: true
             toolchain_version: stable
-        protobuf_compiler:
-          - https://github.com/protocolbuffers/protobuf/releases/download/v21.12/protoc-21.12-linux-x86_64.zip
 
     name: Build and push rust_builder:${{ matrix.debian_suite }}-${{ matrix.toolchain_version }}
     steps:
@@ -66,7 +65,7 @@ jobs:
           build-args: |
             TOOLCHAIN_VERSION=${{ matrix.toolchain_version }}
             DEBIAN_SUITE=${{ matrix.debian_suite }}
-            PROTOBUF_COMPILER=${{  matrix.protobuf_compiler }}
+            PROTOBUF_COMPILER=${{ env.protobuf_compiler }}
           context: ./rust_builder/
           push: true
           platforms: linux/amd64,linux/arm64
